@@ -1,0 +1,93 @@
+openapi: "3.0.1"
+info:
+  title: "Send_message_batch_SQS"
+  description: "REST API Demo using SendMessageBatch API- send up to 10 messages to\
+    \ the specified queue. This is demo also includes SendMessage, using query string\
+    \ parameters."
+  version: "2023-10-08T10:13:18Z"
+servers:
+- url: "https://{api_id}.execute-api.us-east-1.amazonaws.com/{basePath}"
+  variables:
+    basePath:
+      default: "SQS_Demo"
+paths:
+  /sqs_batch_api:
+    post:
+      parameters:
+      - name: "SendMessageBatchRequestEntry.1.MessageBody"
+        in: "query"
+        schema:
+          type: "string"
+      - name: "SendMessageBatchRequestEntry.2.Id"
+        in: "query"
+        schema:
+          type: "string"
+      - name: "SendMessageBatchRequestEntry.1.Id"
+        in: "query"
+        schema:
+          type: "string"
+      - name: "SendMessageBatchRequestEntry.2.MessageBody"
+        in: "query"
+        schema:
+          type: "string"
+      responses:
+        "200":
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+      x-amazon-apigateway-integration:
+        credentials: "arn:aws:iam::1234567890:role/batch_api_sqs"
+        httpMethod: "POST"
+        uri: "arn:aws:apigateway:us-east-1:sqs:path//?Action=SendMessageBatch&SendMessageBatchRequestEntry.1.Id=test_msg_001&SendMessageBatchRequestEntry.1.MessageBody=test&QueueUrl=https://sqs.us-east-1.amazonaws.com/1234567890/api_proxy"
+        responses:
+          default:
+            statusCode: "200"
+        requestParameters:
+          integration.request.querystring.SendMessageBatchRequestEntry.1.Id: "method.request.querystring.SendMessageBatchRequestEntry.1.Id"
+          integration.request.querystring.SendMessageBatchRequestEntry.2.Id: "method.request.querystring.SendMessageBatchRequestEntry.2.Id"
+          integration.request.querystring.SendMessageBatchRequestEntry.1.MessageBody: "method.request.querystring.SendMessageBatchRequestEntry.1.MessageBody"
+          integration.request.querystring.SendMessageBatchRequestEntry.2.MessageBody: "method.request.querystring.SendMessageBatchRequestEntry.2.MessageBody"
+        passthroughBehavior: "when_no_match"
+        type: "aws"
+  /sqs_send_message_api:
+    post:
+      parameters:
+      - name: "MessageAttribute.1.Value.StringValue"
+        in: "query"
+        schema:
+          type: "string"
+      - name: "MessageAttribute.1.Value.DataType"
+        in: "query"
+        schema:
+          type: "string"
+      - name: "MessageAttribute.1.Name"
+        in: "query"
+        schema:
+          type: "string"
+      responses:
+        "200":
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+      x-amazon-apigateway-integration:
+        credentials: "arn:aws:iam::1234567890:role/batch_api_sqs"
+        httpMethod: "POST"
+        uri: "arn:aws:apigateway:us-east-1:sqs:path//?Action=SendMessage&MessageBody=test_msg_01&MessageAttribute.1.Name=my_attribute_name_1&MessageAttribute.1.Value.StringValue=my_attribute_value_1&MessageAttribute.1.Value.DataType=String&QueueUrl=https://sqs.us-east-1.amazonaws.com/1234567890/api_proxy"
+        responses:
+          default:
+            statusCode: "200"
+        requestParameters:
+          integration.request.querystring.MessageAttribute.1.Name: "method.request.querystring.MessageAttribute.1.Name"
+          integration.request.querystring.MessageAttribute.1.Value.DataType: "method.request.querystring.MessageAttribute.1.Value.DataType"
+          integration.request.querystring.MessageAttribute.1.Value.StringValue: "method.request.querystring.MessageAttribute.1.Value.StringValue"
+        passthroughBehavior: "when_no_match"
+        type: "aws"
+components:
+  schemas:
+    Empty:
+      title: "Empty Schema"
+      type: "object"
